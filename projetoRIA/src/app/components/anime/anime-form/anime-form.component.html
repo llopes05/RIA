@@ -1,0 +1,50 @@
+<div class="p-3">
+  <div class="field mb-3">
+    <label for="nome" class="block mb-2 font-semibold">Nome do Anime  </label>
+    <input 
+      pInputText 
+      id="nome" 
+      [(ngModel)]="formData.nome" 
+      placeholder="Ex: Naruto"
+      class="w-full" 
+      required />
+  </div>
+  
+  <div class="field mb-3">
+    <label for="episodios" class="block mb-2 font-semibold">Número de Episódios  </label>
+    <p-inputNumber 
+      inputId="episodios"
+      [(ngModel)]="formData.episodios"
+      [min]="1"
+      placeholder="Ex: 220"
+      class="w-full"
+      [showButtons]="true">
+    </p-inputNumber>
+  </div>
+  
+  <div class="field mb-4">
+    <div class="flex align-items-center">
+      <p-checkbox 
+        inputId="assistido"
+        [(ngModel)]="formData.assistido"
+        [binary]="true"
+        class="mr-2">
+      </p-checkbox>
+      <label for="assistido" class="font-semibold">Já assistiu este anime?</label>
+    </div>
+  </div>
+</div>
+
+<div class="flex justify-content-end gap-3 p-3 border-top-1 surface-border">
+  <p-button 
+    label="Cancelar" 
+    severity="secondary" 
+    [outlined]="true"
+    (onClick)="cancel()">
+  </p-button>
+  <p-button 
+    [label]="editMode ? 'Atualizar' : 'Salvar'" 
+    (onClick)="save()"
+    [disabled]="!formData.nome.trim()">
+  </p-button>
+</div>

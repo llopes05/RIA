@@ -1,0 +1,77 @@
+<div class="card">
+  <h2>Lista de Animes</h2>
+  <p-button
+    label="Novo Anime"
+    icon="pi pi-plus"
+    (onClick)="openNewAnimeDialog()">
+    </p-button>
+  
+  
+  <p-table [value]="animes" [tableStyle]="{'min-width': '50rem'}">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Episódios</th>
+        <th>Assistido</th>
+        <th>Ações</th>
+      </tr>
+    </ng-template>
+    
+    <ng-template pTemplate="body" let-anime>
+      <tr>
+        <td>{{ anime.id }}</td>
+        <td>{{ anime.nome }}</td>
+        <td>{{ anime.episodios }}</td>
+        <td>
+          <p-tag 
+            [value]="anime.assistido ? 'Assistido' : 'Não Assistido'" 
+            [severity]="anime.assistido ? 'success' : 'danger'">
+          </p-tag>
+        </td>
+        <td>
+          
+          
+          <p-button 
+            icon="pi pi-pencil" 
+            size="small" 
+            severity="secondary" 
+            [outlined]="true"
+            (onClick)="onEdit(anime)"
+            pTooltip="Editar"
+            class="ml-2">
+          </p-button>
+          
+          <p-button 
+            icon="pi pi-trash" 
+            size="small" 
+            severity="danger" 
+            [outlined]="true"
+            (onClick)="onDelete(anime)"
+            pTooltip="Excluir"
+            class="ml-2">
+          </p-button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+
+<p-dialog 
+  [header]="editMode ? 'Editar Anime' : 'Novo Anime'" 
+  [(visible)]="showDialog" 
+  [style]="{width: '450px'}" 
+  [modal]="true">
+  
+  <app-anime-form 
+    [anime]="selectedAnime" 
+    [editMode]="editMode"
+    (onSave)="saveAnime($event)"
+    (onCancel)="closeDialog()">
+  </app-anime-form>
+  
+</p-dialog>
+
+
+<p-confirmDialog></p-confirmDialog>
