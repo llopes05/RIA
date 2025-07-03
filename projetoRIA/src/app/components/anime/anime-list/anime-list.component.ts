@@ -7,23 +7,37 @@ import { Anime } from '../../../models/anime.model';
 import { TooltipModule } from 'primeng/tooltip';
 import { DialogModule } from 'primeng/dialog';
 import { AnimeFormComponent } from '../anime-form/anime-form.component';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ConfirmationService } from 'primeng/api';
+import { AnimeDeleteComponent } from '../anime-delete/anime-delete.component';
+import { AnimeDetailComponent } from '../anime-detail/anime-detail.component';
 
 @Component({
   selector: 'app-anime-list',
-  imports: [TableModule, ButtonModule, TagModule, TooltipModule, DialogModule, AnimeFormComponent, ConfirmDialogModule],
+  imports: [
+    TableModule, 
+    ButtonModule, 
+    TagModule, 
+    TooltipModule, 
+    DialogModule, 
+    AnimeFormComponent, 
+    AnimeDeleteComponent,
+    AnimeDetailComponent
+  ],
   templateUrl: './anime-list.component.html',
-  styleUrl: './anime-list.component.css',
-  providers: [ConfirmationService]
+  styleUrl: './anime-list.component.css'
 })
 export class AnimeListComponent implements OnInit {
   animes: Anime[] = [];
-  showDialog = false;
+  
+  // Controle dos dialogs
+  showFormDialog = false;
+  showDetailDialog = false;
+  
   selectedAnime: Anime | null = null;
+  selectedAnimeForDelete: Anime | null = null;
   editMode = false;
 
-  constructor(private animeService: AnimeService, private confirmationService: ConfirmationService) { }
+  constructor(private animeService: AnimeService) { }
+  
   ngOnInit(): void {
     this.loadAnimes();
   }
@@ -32,68 +46,73 @@ export class AnimeListComponent implements OnInit {
     this.animes = this.animeService.getAll();
   }
 
+  // NOVO ANIME
   openNewAnimeDialog() {
     this.selectedAnime = null;
     this.editMode = false;
-    this.showDialog = true;
+    this.showFormDialog = true;
   }
 
-  closeDialog() {
-    this.showDialog = false;
-    this.selectedAnime = null;
+  // EDITAR ANIME
+  onEdit(anime: Anime) {
+    this.selectedAnime = anime;
+    this.editMode = true;
+    this.showFormDialog = true;
   }
 
+  // SALVAR ANIME (CREATE/UPDATE)
   saveAnime(animeData: Omit<Anime, 'id'>) {
     if (this.editMode && this.selectedAnime) {
-      // atualizar // UPDATE
+      // UPDATE
       this.animeService.update(this.selectedAnime.id, animeData);
       console.log('Anime atualizado!');
     } else {
-      // criar novo // CREATE
+      // CREATE
       this.animeService.create(animeData);
       console.log('Novo anime criado!');
     }
     this.loadAnimes();
-    this.closeDialog();
-    
-    // array salvo localmente no navegador
+    this.closeFormDialog();
     console.log('Lista completa de animes:', this.animeService.getAll());
   }
 
-  onEdit(anime: Anime) {
-    this.selectedAnime = anime;
-    this.editMode = true;
-    this.showDialog = true;
+  // FECHAR DIALOG DE FORMULÁRIO
+  closeFormDialog() {
+    this.showFormDialog = false;
+    // Aguarda um pouco antes de limpar para dar tempo do formulário processar
+    setTimeout(() => {
+      this.selectedAnime = null;
+      this.editMode = false;
+    }, 100);
   }
 
+  // DETALHES DO ANIME
   onDetail(anime: Anime) {
-    console.log('Detail anime:', anime);
+    this.selectedAnime = anime;
+    this.showDetailDialog = true;
   }
 
-  //apaga // DELETE
+  // FECHAR DIALOG DE DETALHES
+  closeDetailDialog() {
+    this.showDetailDialog = false;
+    this.selectedAnime = null;
+  }
+
+  // DELETAR ANIME
   onDelete(anime: Anime) {
-    this.confirmationService.confirm({
-      message: `Tem certeza que deseja excluir o anime "${anime.nome}"?`,
-      header: 'Confirmar Exclusão',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Sim',
-      rejectLabel: 'Não',
-      accept: () => {
-        const success = this.animeService.delete(anime.id);
-        if (success) {
-          console.log('Anime deletado:', anime.nome);
-          this.loadAnimes();
-          console.log('Lista atualizada:', this.animeService.getAll());
-        } else {
-          console.log('Erro ao deletar anime');
-        }
-      },
-      reject: () => {
-        console.log('Exclusão cancelada');
-      }
-    });
+    this.selectedAnimeForDelete = anime;
+    // O componente AnimeDeleteComponent vai abrir automaticamente o confirm dialog
   }
 
-
-  
+  // CALLBACK QUANDO ANIME É DELETADO
+  onAnimeDeleted(success: boolean) {
+    if (success) {
+      console.log('Anime deletado com sucesso!');
+      this.loadAnimes();
+    } else {
+      console.log('Operação de exclusão cancelada ou falhou');
+    }
+    // Sempre limpa o selectedAnimeForDelete após a operação (sucesso ou cancelamento)
+    this.selectedAnimeForDelete = null;
+  }
 }

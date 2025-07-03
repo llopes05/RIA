@@ -1,0 +1,36 @@
+<div class="anime-detail" *ngIf="anime">
+  <p-card>
+    <ng-template pTemplate="header">
+      <div class="card-header">
+        <h3>{{ anime!.nome }}</h3>
+      </div>
+    </ng-template>
+    
+    <ng-template pTemplate="content">
+      <div class="anime-info">
+        <div class="info-item">
+          <label><strong>ID:</strong></label>
+          <span>{{ anime!.id }}</span>
+        </div>
+        
+        <div class="info-item">
+          <label><strong>Nome:</strong></label>
+          <span>{{ anime!.nome }}</span>
+        </div>
+        
+        <div class="info-item">
+          <label><strong>Episódios:</strong></label>
+          <span>{{ anime!.episodios }}</span>
+        </div>
+        
+        <div class="info-item">
+          <label><strong>Status:</strong></label>
+          <p-tag 
+            [value]="anime!.assistido ? 'Assistido' : 'Não Assistido'" 
+            [severity]="anime!.assistido ? 'success' : 'danger'">
+          </p-tag>
+        </div>
+      </div>
+    </ng-template>
+  </p-card>
+</div>
