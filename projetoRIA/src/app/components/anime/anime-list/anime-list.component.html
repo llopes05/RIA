@@ -30,8 +30,17 @@
           </p-tag>
         </td>
         <td>
+          <!-- BOTÃO DETALHAR -->
+          <p-button 
+            icon="pi pi-eye" 
+            size="small" 
+            severity="info" 
+            [outlined]="true"
+            (onClick)="onDetail(anime)"
+            pTooltip="Ver Detalhes">
+          </p-button>
           
-          
+          <!-- BOTÃO EDITAR -->
           <p-button 
             icon="pi pi-pencil" 
             size="small" 
@@ -42,6 +51,7 @@
             class="ml-2">
           </p-button>
           
+          <!-- BOTÃO DELETAR -->
           <p-button 
             icon="pi pi-trash" 
             size="small" 
@@ -57,10 +67,10 @@
   </p-table>
 </div>
 
-
+<!-- DIALOG PARA INSERIR/ATUALIZAR -->
 <p-dialog 
   [header]="editMode ? 'Editar Anime' : 'Novo Anime'" 
-  [(visible)]="showDialog" 
+  [(visible)]="showFormDialog" 
   [style]="{width: '450px'}" 
   [modal]="true">
   
@@ -68,10 +78,27 @@
     [anime]="selectedAnime" 
     [editMode]="editMode"
     (onSave)="saveAnime($event)"
-    (onCancel)="closeDialog()">
+    (onCancel)="closeFormDialog()">
   </app-anime-form>
   
 </p-dialog>
 
+<!-- DIALOG PARA DETALHES -->
+<p-dialog 
+  header="Detalhes do Anime"
+  [(visible)]="showDetailDialog" 
+  [style]="{width: '450px'}" 
+  [modal]="true">
+  
+  <app-anime-detail 
+    [anime]="selectedAnime"
+    (onClose)="closeDetailDialog()">
+  </app-anime-detail>
+  
+</p-dialog>
 
-<p-confirmDialog></p-confirmDialog>
+<!-- COMPONENTE PARA DELETAR - Não precisa de dialog pois já tem o confirmDialog interno -->
+<app-anime-delete 
+  [anime]="selectedAnimeForDelete"
+  (onDelete)="onAnimeDeleted($event)">
+</app-anime-delete>
