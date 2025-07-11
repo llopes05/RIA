@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { TableModule } from 'primeng/table';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { TableModule, Table } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { AnimeService } from '../anime.service';
@@ -9,23 +10,35 @@ import { DialogModule } from 'primeng/dialog';
 import { AnimeFormComponent } from '../anime-form/anime-form.component';
 import { AnimeDeleteComponent } from '../anime-delete/anime-delete.component';
 import { AnimeDetailComponent } from '../anime-detail/anime-detail.component';
+import { ToolbarModule } from 'primeng/toolbar';
+import { InputIcon } from "primeng/inputicon";
+import { IconField } from "primeng/iconfield";
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-anime-list',
   imports: [
-    TableModule, 
-    ButtonModule, 
-    TagModule, 
-    TooltipModule, 
-    DialogModule, 
-    AnimeFormComponent, 
+    CommonModule,
+    TableModule,
+    ButtonModule,
+    TagModule,
+    TooltipModule,
+    DialogModule,
+    AnimeFormComponent,
     AnimeDeleteComponent,
-    AnimeDetailComponent
-  ],
+    AnimeDetailComponent,
+    ToolbarModule,
+    InputIcon,
+    IconField,
+    SplitButtonModule,
+    InputTextModule
+],
   templateUrl: './anime-list.component.html',
   styleUrl: './anime-list.component.css'
 })
 export class AnimeListComponent implements OnInit {
+  @ViewChild('dt') dt!: Table;
   animes: Anime[] = [];
   
   // Controle dos dialogs
@@ -35,6 +48,7 @@ export class AnimeListComponent implements OnInit {
   selectedAnime: Anime | null = null;
   selectedAnimeForDelete: Anime | null = null;
   editMode = false;
+items: any;
 
   constructor(private animeService: AnimeService) { }
   
@@ -44,6 +58,13 @@ export class AnimeListComponent implements OnInit {
 
   loadAnimes(){
     this.animes = this.animeService.getAll();
+  }
+
+  // FILTRO GLOBAL PARA PESQUISA
+  onGlobalFilter(event: Event) {
+    const input = event.target as HTMLInputElement;
+    console.log('Pesquisando por:', input.value);
+    this.dt.filterGlobal(input.value, 'contains');
   }
 
   // NOVO ANIME
@@ -114,5 +135,51 @@ export class AnimeListComponent implements OnInit {
     }
     // Sempre limpa o selectedAnimeForDelete após a operação (sucesso ou cancelamento)
     this.selectedAnimeForDelete = null;
+  }
+
+  // FUNÇÃO DE ORDENAÇÃO CUSTOMIZADA
+  customSort(event: any) {
+    event.data.sort((data1: any, data2: any) => {
+      let value1 = data1[event.field];
+      let value2 = data2[event.field];
+      let result = null;
+
+      if (value1 == null && value2 != null)
+        result = -1;
+      else if (value1 != null && value2 == null)
+        result = 1;
+      else if (value1 == null && value2 == null)
+        result = 0;
+      else if (typeof value1 === 'string' && typeof value2 === 'string')
+        result = value1.localeCompare(value2);
+      else
+        result = (value1 < value2) ? -1 : (value1 > value2) ? 1 : 0;
+
+      return (event.order * result);
+    });
+  }
+
+  // MÉTODOS HELPER PARA A TABELA
+  getProgressPercentage(anime: Anime): number {
+    if (anime.episodios === 0) return 0;
+    return Math.round((anime.episodioAtual / anime.episodios) * 100);
+  }
+
+  getStatusLabel(status: string): string {
+    switch(status) {
+      case 'assistido': return 'Assistido';
+      case 'assistindo': return 'Assistindo';
+      case 'pendente': return 'Pendente';
+      default: return 'Desconhecido';
+    }
+  }
+
+  getStatusSeverity(status: string): string {
+    switch(status) {
+      case 'assistido': return 'success';
+      case 'assistindo': return 'info';
+      case 'pendente': return 'warning';
+      default: return 'secondary';
+    }
   }
 }

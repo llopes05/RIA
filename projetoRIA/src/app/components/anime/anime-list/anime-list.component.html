@@ -1,20 +1,69 @@
 <div class="card">
   <h2>Lista de Animes</h2>
-  <p-button
-    label="Novo Anime"
-    icon="pi pi-plus"
-    (onClick)="openNewAnimeDialog()">
-    </p-button>
   
+
   
-  <p-table [value]="animes" [tableStyle]="{'min-width': '50rem'}">
+  <p-table #dt [value]="animes" [tableStyle]="{'min-width': '50rem'}" (sortFunction)="customSort($event)" [customSort]="true" [globalFilterFields]="['nome', 'episodios']">
+    
+    <ng-template pTemplate="caption">
+      <div class="flex justify-between items-center">
+        <h3 class="m-0">Suas notas!</h3>
+        <div class="flex items-center gap-2">
+          <p-iconfield iconPosition="left">
+            <p-inputicon class="pi pi-search" />
+            <input 
+              type="text" 
+              pInputText 
+              placeholder="Pesquisar animes..." 
+              (input)="onGlobalFilter($event)" />
+          </p-iconfield>
+        </div>
+      </div>
+    </ng-template>
+    
     <ng-template pTemplate="header">
       <tr>
-        <th>ID</th>
-        <th>Nome</th>
-        <th>Episódios</th>
-        <th>Assistido</th>
-        <th>Ações</th>
+        <th pSortableColumn="id">
+          <div class="flex items-center gap-2">
+            ID
+            <p-sortIcon field="id" />
+          </div>
+        </th>
+        <th pSortableColumn="nome">
+          <div class="flex items-center gap-2">
+            Nome
+            <p-sortIcon field="nome" />
+          </div>
+        </th>
+        <th pSortableColumn="episodios">
+          <div class="flex items-center gap-2">
+            Episódios
+            <p-sortIcon field="episodios" />
+          </div>
+        </th>
+        <th pSortableColumn="episodioAtual">
+          <div class="flex items-center gap-2">
+            Progresso
+            <p-sortIcon field="episodioAtual" />
+          </div>
+        </th>
+        <th pSortableColumn="nota">
+          <div class="flex items-center gap-2">
+            Nota
+            <p-sortIcon field="nota" />
+          </div>
+        </th>
+        <th pSortableColumn="status">
+          <div class="flex items-center gap-2">
+            Status
+            <p-sortIcon field="status" />
+          </div>
+        </th>
+        <th>
+          <div class="flex items-center gap-2">
+            Ações
+          </div>
+        </th>
       </tr>
     </ng-template>
     
@@ -24,9 +73,21 @@
         <td>{{ anime.nome }}</td>
         <td>{{ anime.episodios }}</td>
         <td>
+          <div class="flex items-center gap-1">
+            <span>{{ anime.episodioAtual }} / {{ anime.episodios }}</span>
+            <small class="text-gray-500">({{ getProgressPercentage(anime) }}%)</small>
+          </div>
+        </td>
+        <td>
+          <div class="flex items-center gap-1">
+            <i class="pi pi-star-fill text-yellow-500" *ngIf="anime.nota > 0"></i>
+            <span>{{ anime.nota > 0 ? anime.nota + '/10' : 'Não avaliado' }}</span>
+          </div>
+        </td>
+        <td>
           <p-tag 
-            [value]="anime.assistido ? 'Assistido' : 'Não Assistido'" 
-            [severity]="anime.assistido ? 'success' : 'danger'">
+            [value]="getStatusLabel(anime.status)" 
+            [severity]="getStatusSeverity(anime.status)">
           </p-tag>
         </td>
         <td>
@@ -71,8 +132,10 @@
 <p-dialog 
   [header]="editMode ? 'Editar Anime' : 'Novo Anime'" 
   [(visible)]="showFormDialog" 
-  [style]="{width: '450px'}" 
-  [modal]="true">
+  [style]="{width: '600px', maxHeight: '90vh'}" 
+  [modal]="true"
+  [resizable]="true"
+  [draggable]="true">
   
   <app-anime-form 
     [anime]="selectedAnime" 
@@ -87,8 +150,10 @@
 <p-dialog 
   header="Detalhes do Anime"
   [(visible)]="showDetailDialog" 
-  [style]="{width: '450px'}" 
-  [modal]="true">
+  [style]="{width: '500px', maxHeight: '90vh'}" 
+  [modal]="true"
+  [resizable]="true"
+  [draggable]="true">
   
   <app-anime-detail 
     [anime]="selectedAnime"

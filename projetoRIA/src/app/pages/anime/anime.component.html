@@ -1,0 +1,85 @@
+<div class="container">
+  <h1>Buscar Animes</h1>
+  <p>Pesquise animes da API Jikan e adicione à sua lista pessoal</p>
+  
+
+  <div class="search-section">
+    <div class="p-inputgroup mb-4">
+      <p-iconfield iconPosition="left">
+        <p-inputicon class="pi pi-search" />
+        <input 
+          type="text" 
+          pInputText 
+          [(ngModel)]="searchQuery"
+          placeholder="Digite o nome do anime"
+          (keyup.enter)="searchAnimes()"
+          class="w-full" />
+      </p-iconfield>
+      <p-button 
+        label="Buscar" 
+        icon="pi pi-search"
+        (onClick)="searchAnimes()"
+        [loading]="isLoading">
+      </p-button>
+    </div>
+  </div>
+
+
+  <div *ngIf="isLoading" class="text-center py-4">
+    <p-progressSpinner></p-progressSpinner>
+    <p>Buscando animes...</p>
+  </div>
+
+  <!-- RESULTADOS -->
+  <div *ngIf="searchResults.length > 0 && !isLoading" class="results-section">
+    <h3>Resultados encontrados ({{ searchResults.length }})</h3>
+    
+    <div class="grid gap-4">
+      <div *ngFor="let anime of searchResults" class="col-12 md:col-6 lg:col-4">
+        <p-card>
+          <ng-template pTemplate="header">
+            <img [src]="anime.images.jpg.image_url" 
+                 [alt]="anime.title"
+                 class="anime-image" />
+          </ng-template>
+          
+          <ng-template pTemplate="content">
+            <h4>{{ anime.title }}</h4>
+            <p><strong>Episódios:</strong> {{ anime.episodes || 'N/A' }}</p>
+          </ng-template>
+          
+          <ng-template pTemplate="footer">
+            <p-button 
+              label="Adicionar à Lista" 
+              icon="pi pi-plus"
+              severity="success"
+              (onClick)="openFormForAnime(anime)"
+              class="w-full">
+            </p-button>
+          </ng-template>
+        </p-card>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIALOG DO FORMULÁRIO -->
+  <p-dialog 
+    header="Adicionar Anime à Lista" 
+    [(visible)]="showFormDialog" 
+    [style]="{width: '600px', maxHeight: '90vh'}" 
+    [modal]="true"
+    [resizable]="true"
+    [draggable]="true">
+    
+    <app-anime-form 
+      [anime]="formAnimeData"
+      [editMode]="false"
+      (onSave)="saveAnime($event)"
+      (onCancel)="closeFormDialog()">
+    </app-anime-form>
+    
+  </p-dialog>
+  
+</div>
+
+
