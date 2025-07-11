@@ -18,4 +18,22 @@ export class AnimeDetailComponent {
   close() {
     this.onClose.emit();
   }
+
+  getStatusLabel(status: string): string {
+    switch(status) {
+      case 'assistido': return 'Assistido';
+      case 'assistindo': return 'Assistindo';
+      case 'pendente': return 'Pendente';
+      default: return 'Desconhecido';
+    }
+  }
+
+  getStatusSeverity(status: string): string {
+    switch(status) {
+      case 'assistido': return 'success';
+      case 'assistindo': return 'info';
+      case 'pendente': return 'warning';
+      default: return 'secondary';
+    }
+  }
 }

@@ -11,7 +11,7 @@
   </div>
   
   <div class="field mb-3">
-    <label for="episodios" class="block mb-2 font-semibold">Número de Episódios  </label>
+    <label for="episodios" class="block mb-2 font-semibold">Número de Episódios</label>
     <p-inputNumber 
       inputId="episodios"
       [(ngModel)]="formData.episodios"
@@ -22,16 +22,43 @@
     </p-inputNumber>
   </div>
   
+  <div class="field mb-3">
+    <label for="episodioAtual" class="block mb-2 font-semibold">Episódio Atual</label>
+    <p-inputNumber 
+      inputId="episodioAtual"
+      [(ngModel)]="formData.episodioAtual"
+      [min]="0"
+      [max]="formData.episodios"
+      placeholder="Ex: 150"
+      class="w-full"
+      [showButtons]="true">
+    </p-inputNumber>
+  </div>
+  
+  <div class="field mb-3">
+    <label for="nota" class="block mb-2 font-semibold">Nota (0-10)</label>
+    <p-inputNumber 
+      inputId="nota"
+      [(ngModel)]="formData.nota"
+      [min]="0"
+      [max]="10"
+      placeholder="Ex: 9"
+      class="w-full"
+      [showButtons]="true">
+    </p-inputNumber>
+  </div>
+  
   <div class="field mb-4">
-    <div class="flex align-items-center">
-      <p-checkbox 
-        inputId="assistido"
-        [(ngModel)]="formData.assistido"
-        [binary]="true"
-        class="mr-2">
-      </p-checkbox>
-      <label for="assistido" class="font-semibold">Já assistiu este anime?</label>
-    </div>
+    <label for="status" class="block mb-2 font-semibold">Status</label>
+    <p-dropdown 
+      inputId="status"
+      [(ngModel)]="formData.status"
+      [options]="statusOptions"
+      optionLabel="label"
+      optionValue="value"
+      placeholder="Selecione o status"
+      class="w-full">
+    </p-dropdown>
   </div>
 </div>
 

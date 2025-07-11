@@ -1,0 +1,41 @@
+.field {
+  margin-bottom: 1.5rem;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.p-inputtext,
+.p-inputnumber,
+.p-dropdown {
+  width: 100%;
+}
+
+.p-inputnumber input {
+  width: 100%;
+}
+
+/* Espaçamento entre os botões */
+.flex.justify-content-end {
+  gap: 1rem;
+  padding: 1.5rem;
+  margin-top: 1rem;
+}
+
+/* Padding geral do formulário */
+.p-3 {
+  padding: 2rem !important;
+}
+
+/* Espaçamento específico para campos */
+.mb-3 {
+  margin-bottom: 2rem !important;
+}
+
+.mb-4 {
+  margin-bottom: 2.5rem !important;
+}

@@ -4,11 +4,14 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
+import { DropdownModule } from 'primeng/dropdown';
 import { Anime } from '../../../models/anime.model';
+
+import { ToolbarModule } from 'primeng/toolbar';
 
 @Component({
   selector: 'app-anime-form',
-  imports: [FormsModule, InputTextModule, InputNumberModule, CheckboxModule, ButtonModule ],
+  imports: [FormsModule, InputTextModule, InputNumberModule, CheckboxModule, ButtonModule, ToolbarModule, DropdownModule ],
   templateUrl: './anime-form.component.html',
   styleUrl: './anime-form.component.css'
 })
@@ -19,41 +22,49 @@ export class AnimeFormComponent implements OnInit, OnChanges {
   @Output() onCancel = new EventEmitter<void>();
 
   formData = {
-    nome: '',
-    episodios: 0,
-    assistido: false
-  };
+  nome: '',
+  episodios: 0,
+  episodioAtual: 0,
+  nota: 0,
+  status: 'pendente' as 'assistido' | 'assistindo' | 'pendente'
+};
+
+  statusOptions = [
+    { label: 'Pendente', value: 'pendente' },
+    { label: 'Assistindo', value: 'assistindo' },
+    { label: 'Assistido', value: 'assistido' }
+  ];
 
   ngOnInit() {
     this.loadFormData();
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    // Detecta mudanças no anime ou editMode e atualiza o formulário
-    if (changes['anime'] || changes['editMode']) {
+    // Detecta mudanças no anime e atualiza o formulário apenas quando o anime muda
+    if (changes['anime'] && changes['anime'].currentValue !== changes['anime'].previousValue) {
       this.loadFormData();
     }
   }
 
   private loadFormData() {
-    if (this.anime && this.editMode) {
-      // Preenchendo com dados do anime para edição
+    if (this.anime) {
+      // Pré-preenche o formulário com os dados do anime, seja em modo de edição ou adição
       this.formData = {
         nome: this.anime.nome,
         episodios: this.anime.episodios,
-        assistido: this.anime.assistido
+        episodioAtual: this.anime.episodioAtual,
+        nota: this.anime.nota,
+        status: this.anime.status
       };
-      console.log('Carregando dados para edição:', this.formData);
+      console.log('Formulário preenchido com:', this.formData);
     } else {
-      // Formulário vazio para criação
       this.resetForm();
-      console.log('Formulário resetado para criação');
     }
   }
 
   save(){
     if (this.formData.nome.trim() !== '') {  
-      console.log('Salvando anime:', this.formData);
+      console.log('Dados do formulário antes de salvar:', this.formData);
       this.onSave.emit(this.formData);
       if (!this.editMode) {
         this.resetForm();
@@ -69,11 +80,13 @@ export class AnimeFormComponent implements OnInit, OnChanges {
     this.resetForm();
   }
   private resetForm() {
-    this.formData = {
-      nome: '',
-      episodios: 1,  
-      assistido: false
-    };
-  }
+  this.formData = {
+    nome: '',
+    episodios: 1,
+    episodioAtual: 0,
+    nota: 0,
+    status: 'pendente'
+  };
+}
 
 }

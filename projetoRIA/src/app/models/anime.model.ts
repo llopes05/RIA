@@ -2,5 +2,8 @@ export interface Anime{
     id: number;
     nome: string;
     episodios: number;
-    assistido: boolean;
+    status: 'assistido' | 'assistindo' | 'pendente';
+    nota: number;
+    episodioAtual: number;
+
 }

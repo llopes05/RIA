@@ -24,11 +24,21 @@
         </div>
         
         <div class="info-item">
+          <label><strong>Episódio Atual:</strong></label>
+          <span>{{ anime!.episodioAtual }} / {{ anime!.episodios }}</span>
+        </div>
+        
+        <div class="info-item">
+          <label><strong>Nota:</strong></label>
+          <span>{{ anime!.nota > 0 ? anime!.nota + '/10' : 'Não avaliado' }}</span>
+        </div>
+        
+        <div class="info-item">
           <label><strong>Status:</strong></label>
           <p-tag 
-            [value]="anime!.assistido ? 'Assistido' : 'Não Assistido'" 
-            [severity]="anime!.assistido ? 'success' : 'danger'">
-          </p-tag>
+  [value]="getStatusLabel(anime!.status)" 
+  [severity]="getStatusSeverity(anime!.status)">
+</p-tag>
         </div>
       </div>
     </ng-template>
