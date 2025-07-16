@@ -38,8 +38,16 @@ export class AnimeDeleteComponent implements OnChanges {
       rejectLabel: 'Não',
       accept: () => {
         if (this.anime) {
-          const success = this.animeService.delete(this.anime.id);
-          this.onDelete.emit(success);
+          this.animeService.delete(this.anime.id).subscribe({
+            next: () => {
+              console.log('Anime deletado com sucesso!');
+              this.onDelete.emit(true);
+            },
+            error: (error) => {
+              console.error('Erro ao deletar anime:', error);
+              this.onDelete.emit(false);
+            }
+          });
         }
       },
       reject: () => {

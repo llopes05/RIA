@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule, Table } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -15,6 +15,7 @@ import { InputIcon } from "primeng/inputicon";
 import { IconField } from "primeng/iconfield";
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { InputTextModule } from 'primeng/inputtext';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-anime-list',
@@ -37,9 +38,10 @@ import { InputTextModule } from 'primeng/inputtext';
   templateUrl: './anime-list.component.html',
   styleUrl: './anime-list.component.css'
 })
-export class AnimeListComponent implements OnInit {
+export class AnimeListComponent implements OnInit, OnDestroy {
   @ViewChild('dt') dt!: Table;
   animes: Anime[] = [];
+  private subscription: Subscription = new Subscription();
   
   // Controle dos dialogs
   showFormDialog = false;
@@ -48,7 +50,7 @@ export class AnimeListComponent implements OnInit {
   selectedAnime: Anime | null = null;
   selectedAnimeForDelete: Anime | null = null;
   editMode = false;
-items: any;
+  items: any;
 
   constructor(private animeService: AnimeService) { }
   
@@ -56,8 +58,17 @@ items: any;
     this.loadAnimes();
   }
 
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
   loadAnimes(){
-    this.animes = this.animeService.getAll();
+    this.subscription.add(
+      this.animeService.getAll().subscribe({
+        next: (animes) => this.animes = animes,
+        error: (error) => console.error('Erro ao carregar animes:', error)
+      })
+    );
   }
 
   // FILTRO GLOBAL PARA PESQUISA
@@ -85,16 +96,27 @@ items: any;
   saveAnime(animeData: Omit<Anime, 'id'>) {
     if (this.editMode && this.selectedAnime) {
       // UPDATE
-      this.animeService.update(this.selectedAnime.id, animeData);
-      console.log('Anime atualizado!');
+      this.subscription.add(
+        this.animeService.update(this.selectedAnime.id, animeData).subscribe({
+          next: () => {
+            console.log('Anime atualizado!');
+            this.closeFormDialog();
+          },
+          error: (error) => console.error('Erro ao atualizar anime:', error)
+        })
+      );
     } else {
       // CREATE
-      this.animeService.create(animeData);
-      console.log('Novo anime criado!');
+      this.subscription.add(
+        this.animeService.create(animeData).subscribe({
+          next: () => {
+            console.log('Novo anime criado!');
+            this.closeFormDialog();
+          },
+          error: (error) => console.error('Erro ao criar anime:', error)
+        })
+      );
     }
-    this.loadAnimes();
-    this.closeFormDialog();
-    console.log('Lista completa de animes:', this.animeService.getAll());
   }
 
   // FECHAR DIALOG DE FORMULÁRIO
