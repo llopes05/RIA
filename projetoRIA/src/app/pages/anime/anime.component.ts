@@ -78,17 +78,24 @@ export class AnimeComponent {
   }
 
   saveAnime(animeData: Omit<Anime, 'id'>) {
-    this.animeService.create(animeData);
-    console.log('Anime adicionado:', animeData);
-    
-    // Feedback e fechar
-    alert(`"${animeData.nome}" foi adicionado à sua lista! Vá para a página Home para ver.`);
-    this.closeFormDialog();
-    
-    // Remove da lista de resultados
-    if (this.selectedJikanAnime) {
-      this.searchResults = this.searchResults.filter(a => a.mal_id !== this.selectedJikanAnime!.mal_id);
-    }
+    this.animeService.create(animeData).subscribe({
+      next: () => {
+        console.log('Anime adicionado:', animeData);
+        
+        // Feedback e fechar
+        alert(`"${animeData.nome}" foi adicionado à sua lista! Vá para a página Home para ver.`);
+        this.closeFormDialog();
+        
+        // Remove da lista de resultados
+        if (this.selectedJikanAnime) {
+          this.searchResults = this.searchResults.filter(a => a.mal_id !== this.selectedJikanAnime!.mal_id);
+        }
+      },
+      error: (error) => {
+        console.error('Erro ao adicionar anime:', error);
+        alert('Erro ao adicionar anime. Tente novamente.');
+      }
+    });
   }
 
   closeFormDialog() {

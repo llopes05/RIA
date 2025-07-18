@@ -40,7 +40,7 @@ export class AnimeFormComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    // Detecta mudanças no anime e atualiza o formulário apenas quando o anime muda
+    // detecta mudanças no anime e atualiza o formulário apenas quando o anime muda
     if (changes['anime'] && changes['anime'].currentValue !== changes['anime'].previousValue) {
       this.loadFormData();
     }
@@ -48,7 +48,7 @@ export class AnimeFormComponent implements OnInit, OnChanges {
 
   private loadFormData() {
     if (this.anime) {
-      // Pré-preenche o formulário com os dados do anime, seja em modo de edição ou adição
+      // pré-preenche o formulário com os dados do anime, seja em modo de edição ou adição (no caso, apenas o nome e a quantidade de episódios)
       this.formData = {
         nome: this.anime.nome,
         episodios: this.anime.episodios,

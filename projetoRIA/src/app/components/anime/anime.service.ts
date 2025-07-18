@@ -1,95 +1,51 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { Anime } from '../../models/anime.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AnimeService {
-  private storageKey = 'animes-list';
-  private animes: Anime[] = [];
-  private nextId: number = 1;
+  private apiUrl = 'http://localhost:8000/api/anime/';
+  private animesSubject = new BehaviorSubject<Anime[]>([]);
+  public animes$ = this.animesSubject.asObservable();
 
-  constructor() {
-    this.loadFromStorage();
+  constructor(private http: HttpClient) {
+    this.loadAnimes();
   }
 
-  private loadFromStorage() {
-    const saved = localStorage.getItem(this.storageKey);
-    if (saved) {
-      this.animes = JSON.parse(saved);
-      this.nextId = Math.max(...this.animes.map(a => a.id), 0) + 1;
-    } else {
-      // Dados iniciais apenas se não houver nada salvo
-      this.animes = [
-        { 
-          id: 1, 
-          nome: 'Naruto', 
-          episodios: 220, 
-          episodioAtual: 150, 
-          nota: 9, 
-          status: 'assistindo' 
-        },
-        { 
-          id: 2, 
-          nome: 'One Piece', 
-          episodios: 1080, 
-          episodioAtual: 800, 
-          nota: 10, 
-          status: 'assistindo' 
-        },
-        { 
-          id: 3, 
-          nome: 'Attack on Titan', 
-          episodios: 75, 
-          episodioAtual: 0, 
-          nota: 0, 
-          status: 'pendente' 
-        }
-      ];
-      this.nextId = 4;
-      this.saveToStorage();
-    }
+  private loadAnimes(): void {
+    this.http.get<Anime[]>(this.apiUrl).subscribe({
+      next: (animes) => this.animesSubject.next(animes),
+      error: (error) => console.error('Erro ao carregar animes:', error)
+    });
   }
 
-  private saveToStorage() {
-    localStorage.setItem(this.storageKey, JSON.stringify(this.animes));
+  getAll(): Observable<Anime[]> {
+    return this.animes$;
   }
 
-  getAll(): Anime[] {
-    return this.animes;
+  getById(id: number): Observable<Anime> {
+    return this.http.get<Anime>(`${this.apiUrl}${id}/`);
   }
 
-  getById(id: number): Anime | undefined {
-    return this.animes.find(anime => anime.id === id);
+  create(anime: Omit<Anime, 'id'>): Observable<Anime> {
+    return this.http.post<Anime>(this.apiUrl, anime).pipe(
+      tap(() => this.loadAnimes()) // Recarrega a lista após criar
+    );
   }
 
-  create(anime: Omit<Anime, 'id'>): Anime {
-    const newAnime: Anime = {
-      ...anime,
-      id: this.nextId++
-    };
-    this.animes.push(newAnime);
-    this.saveToStorage();
-    return newAnime;
+  update(id: number, anime: Omit<Anime, 'id'>): Observable<Anime> {
+    return this.http.put<Anime>(`${this.apiUrl}${id}/`, anime).pipe(
+      tap(() => this.loadAnimes()) // Recarrega a lista após atualizar
+    );
   }
 
-  update(id: number, anime: Omit<Anime, 'id'>): Anime | null {
-    const index = this.animes.findIndex(a => a.id === id);
-    if (index !== -1) {
-      this.animes[index] = { ...anime, id };
-      this.saveToStorage();
-      return this.animes[index];
-    }
-    return null;
-  }
-
-  delete(id: number): boolean {
-    const index = this.animes.findIndex(a => a.id === id);
-    if (index !== -1) {
-      this.animes.splice(index, 1);
-      this.saveToStorage();
-      return true;
-    }
-    return false;
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}${id}/`).pipe(
+      tap(() => this.loadAnimes()) // Recarrega a lista após deletar
+    );
   }
 }
