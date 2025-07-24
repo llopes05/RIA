@@ -8,7 +8,7 @@ import { Anime } from '../../models/anime.model';
   providedIn: 'root'
 })
 export class AnimeService {
-  private apiUrl = 'https://effective-meme-x5r7wx5jq5wgcrj7-8000.app.github.dev/api/anime/';
+  private apiUrl = 'http://127.0.0.1:8000/api/anime/';
   private animesSubject = new BehaviorSubject<Anime[]>([]);
   public animes$ = this.animesSubject.asObservable();
 
