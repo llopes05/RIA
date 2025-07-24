@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { TableModule, Table } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
@@ -11,8 +12,6 @@ import { AnimeFormComponent } from '../anime-form/anime-form.component';
 import { AnimeDeleteComponent } from '../anime-delete/anime-delete.component';
 import { AnimeDetailComponent } from '../anime-detail/anime-detail.component';
 import { ToolbarModule } from 'primeng/toolbar';
-import { InputIcon } from "primeng/inputicon";
-import { IconField } from "primeng/iconfield";
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { InputTextModule } from 'primeng/inputtext';
 import { Subscription } from 'rxjs';
@@ -21,6 +20,7 @@ import { Subscription } from 'rxjs';
   selector: 'app-anime-list',
   imports: [
     CommonModule,
+    RouterModule,
     TableModule,
     ButtonModule,
     TagModule,
@@ -30,8 +30,6 @@ import { Subscription } from 'rxjs';
     AnimeDeleteComponent,
     AnimeDetailComponent,
     ToolbarModule,
-    InputIcon,
-    IconField,
     SplitButtonModule,
     InputTextModule
 ],
@@ -55,6 +53,7 @@ export class AnimeListComponent implements OnInit, OnDestroy {
   constructor(private animeService: AnimeService) { }
   
   ngOnInit(): void {
+    console.log('AnimeListComponent inicializado');
     this.loadAnimes();
   }
 
@@ -63,10 +62,17 @@ export class AnimeListComponent implements OnInit, OnDestroy {
   }
 
   loadAnimes(){
+    console.log('Iniciando carregamento de animes...');
     this.subscription.add(
       this.animeService.getAll().subscribe({
-        next: (animes) => this.animes = animes,
-        error: (error) => console.error('Erro ao carregar animes:', error)
+        next: (animes) => {
+          console.log('Animes recebidos:', animes);
+          this.animes = animes;
+        },
+        error: (error) => {
+          console.error('Erro ao carregar animes:', error);
+          console.log('Detalhes do erro:', error);
+        }
       })
     );
   }

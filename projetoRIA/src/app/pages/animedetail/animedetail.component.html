@@ -1,0 +1,86 @@
+<div class="anime-detail-container">
+  <!-- Loading state -->
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Carregando detalhes do anime...</p>
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="error && !loading" class="error">
+    <h2>Erro</h2>
+    <p>{{ error }}</p>
+    <button (click)="goBack()" class="btn btn-secondary">Voltar</button>
+  </div>
+
+  <!-- Anime details -->
+  <div *ngIf="anime && !loading" class="anime-details">
+    <div class="header">
+      <button (click)="goBack()" class="btn btn-back">
+        ← Voltar para Lista
+      </button>
+      <h1>{{ anime.nome }}</h1>
+    </div>
+
+    <div class="details-card">
+      <div class="detail-item">
+        <span class="label">Nome:</span>
+        <span class="value">{{ anime.nome }}</span>
+      </div>
+
+      <div class="detail-item">
+        <span class="label">Total de Episódios:</span>
+        <span class="value">{{ anime.episodios }}</span>
+      </div>
+
+      <div class="detail-item">
+        <span class="label">Episódio Atual:</span>
+        <span class="value">{{ anime.episodioAtual }}</span>
+      </div>
+
+      <div class="detail-item">
+        <span class="label">Progresso:</span>
+        <div class="progress-container">
+          <div class="progress-bar">
+            <div class="progress-fill" 
+                 [style.width.%]="anime.episodios > 0 ? (anime.episodioAtual / anime.episodios) * 100 : 0">
+            </div>
+          </div>
+          <span class="progress-text">
+            {{ anime.episodioAtual }} / {{ anime.episodios }} 
+            ({{ anime.episodios > 0 ? ((anime.episodioAtual / anime.episodios) * 100).toFixed(1) : 0 }}%)
+          </span>
+        </div>
+      </div>
+
+      <div class="detail-item">
+        <span class="label">Status:</span>
+        <span class="status-badge" [style.color]="getStatusColor(anime.status)">
+          {{ getStatusText(anime.status) }}
+        </span>
+      </div>
+
+      <div class="detail-item">
+        <span class="label">Nota:</span>
+        <div class="rating">
+          <span *ngFor="let star of getStars(anime.nota)" 
+                class="star" 
+                [class.filled]="star === 1">
+            ★
+          </span>
+          <span class="rating-text">({{ anime.nota }}/5)</span>
+        </div>
+      </div>
+
+      <div class="detail-item">
+        <span class="label">ID:</span>
+        <span class="value">#{{ anime.id }}</span>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button (click)="goBack()" class="btn btn-secondary">
+        Voltar para Lista
+      </button>
+    </div>
+  </div>
+</div>
