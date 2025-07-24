@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AnimeListComponent } from '../../components/anime/anime-list/anime-list.component';
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -7,6 +8,10 @@ import { AnimeListComponent } from '../../components/anime/anime-list/anime-list
   standalone: true,
   imports: [AnimeListComponent]
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
+
+  ngOnInit(): void {
+    console.log('Home component iniciado');
+  }
 
 }

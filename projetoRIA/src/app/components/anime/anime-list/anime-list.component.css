@@ -1,0 +1,26 @@
+.anime-link {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.anime-link:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+.card {
+  margin: 1rem;
+  padding: 1rem;
+}
+
+.card h2 {
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.card h3 {
+  color: #666;
+  margin-bottom: 0.5rem;
+}
