@@ -8,3 +8,4 @@ export const routes: Routes = [
     { path: 'anime/:id', loadComponent: () => import('./pages/animedetail/animedetail.component').then(m => m.AnimedetailComponent) },
     { path: '**', redirectTo: 'home' }
 ];
+//
