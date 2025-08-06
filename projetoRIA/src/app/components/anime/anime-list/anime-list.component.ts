@@ -12,6 +12,8 @@ import { AnimeFormComponent } from '../anime-form/anime-form.component';
 import { AnimeDeleteComponent } from '../anime-delete/anime-delete.component';
 import { AnimeDetailComponent } from '../anime-detail/anime-detail.component';
 import { ToolbarModule } from 'primeng/toolbar';
+import { InputIcon } from "primeng/inputicon";
+import { IconField } from "primeng/iconfield";
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { InputTextModule } from 'primeng/inputtext';
 import { Subscription } from 'rxjs';
@@ -30,6 +32,8 @@ import { Subscription } from 'rxjs';
     AnimeDeleteComponent,
     AnimeDetailComponent,
     ToolbarModule,
+    InputIcon,
+    IconField,
     SplitButtonModule,
     InputTextModule
 ],

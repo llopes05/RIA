@@ -1,0 +1,118 @@
+<div class="register-container">
+  <div class="register-card">
+    <p-card>
+      <ng-template pTemplate="header">
+        <div class="header-content">
+          <h2>Registro</h2>
+          <p>Crie sua conta para gerenciar sua lista de animes</p>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="content">
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+          
+          <!-- Mensagem de erro -->
+          <div *ngIf="errorMessage" class="mb-3">
+            <p-message severity="error" [text]="errorMessage"></p-message>
+          </div>
+
+          <!-- Campo Username -->
+          <div class="field mb-3">
+            <label for="username" class="block mb-2 font-semibold">Usuário</label>
+            <input
+              pInputText
+              id="username"
+              formControlName="username"
+              placeholder="Digite seu usuário"
+              class="w-full"
+              [class.ng-invalid]="isFieldInvalid('username')"
+            />
+            <small 
+              *ngIf="isFieldInvalid('username')" 
+              class="p-error block mt-1">
+              {{ getFieldError('username') }}
+            </small>
+          </div>
+
+          <!-- Campo Email -->
+          <div class="field mb-3">
+            <label for="email" class="block mb-2 font-semibold">Email</label>
+            <input
+              pInputText
+              id="email"
+              formControlName="email"
+              placeholder="Digite seu email"
+              class="w-full"
+              [class.ng-invalid]="isFieldInvalid('email')"
+            />
+            <small 
+              *ngIf="isFieldInvalid('email')" 
+              class="p-error block mt-1">
+              {{ getFieldError('email') }}
+            </small>
+          </div>
+
+          <!-- Campo Password -->
+          <div class="field mb-3">
+            <label for="password" class="block mb-2 font-semibold">Senha</label>
+            <p-password
+              inputId="password"
+              formControlName="password"
+              placeholder="Digite sua senha"
+              [feedback]="true"
+              [toggleMask]="true"
+              class="w-full"
+              [class.ng-invalid]="isFieldInvalid('password')"
+            ></p-password>
+            <small 
+              *ngIf="isFieldInvalid('password')" 
+              class="p-error block mt-1">
+              {{ getFieldError('password') }}
+            </small>
+          </div>
+
+          <!-- Campo Confirmar Password -->
+          <div class="field mb-4">
+            <label for="password_confirm" class="block mb-2 font-semibold">Confirmar Senha</label>
+            <p-password
+              inputId="password_confirm"
+              formControlName="password_confirm"
+              placeholder="Confirme sua senha"
+              [feedback]="false"
+              [toggleMask]="true"
+              class="w-full"
+              [class.ng-invalid]="isFieldInvalid('password_confirm')"
+            ></p-password>
+            <small 
+              *ngIf="isFieldInvalid('password_confirm')" 
+              class="p-error block mt-1">
+              {{ getFieldError('password_confirm') }}
+            </small>
+          </div>
+
+          <!-- Botões -->
+          <div class="flex flex-column gap-3">
+            <p-button
+              type="submit"
+              label="Registrar"
+              icon="pi pi-user-plus"
+              [loading]="loading"
+              [disabled]="registerForm.invalid"
+              class="w-full"
+            ></p-button>
+
+            <p-button
+              type="button"
+              label="Já tem conta? Faça login"
+              severity="secondary"
+              [outlined]="true"
+              (onClick)="goToLogin()"
+              class="w-full"
+            ></p-button>
+          </div>
+
+        </form>
+      </ng-template>
+    </p-card>
+  </div>
+</div>

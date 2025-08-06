@@ -8,7 +8,7 @@ import { Anime } from '../../models/anime.model';
   providedIn: 'root'
 })
 export class AnimeService {
-  private apiUrl = 'http://127.0.0.1:8000/api/anime/';
+  private apiUrl = 'http://localhost:8000/api/anime/';
   private animesSubject = new BehaviorSubject<Anime[]>([]);
   public animes$ = this.animesSubject.asObservable();
 
@@ -32,7 +32,7 @@ export class AnimeService {
   }
 
   getAll(): Observable<Anime[]> {
-    return this.http.get<Anime[]>(this.apiUrl);
+    return this.animes$;
   }
 
   getById(id: number): Observable<Anime> {
