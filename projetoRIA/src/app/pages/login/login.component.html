@@ -1,0 +1,81 @@
+<div class="login-container">
+  <div class="login-card">
+    <p-card>
+      <ng-template pTemplate="header">
+        <div class="header-content">
+          <h2>Login</h2>
+          <p>Faça login para acessar sua lista de animes</p>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="content">
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          
+          <!-- Mensagem de erro -->
+          <div *ngIf="errorMessage" class="mb-3">
+            <p-message severity="error" [text]="errorMessage"></p-message>
+          </div>
+
+          <!-- Campo Username -->
+          <div class="field mb-3">
+            <label for="username" class="block mb-2 font-semibold">Usuário</label>
+            <input
+              pInputText
+              id="username"
+              formControlName="username"
+              placeholder="Digite seu usuário"
+              class="w-full"
+              [class.ng-invalid]="isFieldInvalid('username')"
+            />
+            <small 
+              *ngIf="isFieldInvalid('username')" 
+              class="p-error block mt-1">
+              {{ getFieldError('username') }}
+            </small>
+          </div>
+
+          <!-- Campo Password -->
+          <div class="field mb-4">
+            <label for="password" class="block mb-2 font-semibold">Senha</label>
+            <p-password
+              inputId="password"
+              formControlName="password"
+              placeholder="Digite sua senha"
+              [feedback]="false"
+              [toggleMask]="true"
+              class="w-full"
+              [class.ng-invalid]="isFieldInvalid('password')"
+            ></p-password>
+            <small 
+              *ngIf="isFieldInvalid('password')" 
+              class="p-error block mt-1">
+              {{ getFieldError('password') }}
+            </small>
+          </div>
+
+          <!-- Botões -->
+          <div class="flex flex-column gap-3">
+            <p-button
+              type="submit"
+              label="Entrar"
+              icon="pi pi-sign-in"
+              [loading]="loading"
+              [disabled]="loginForm.invalid"
+              class="w-full"
+            ></p-button>
+
+            <p-button
+              type="button"
+              label="Não tem conta? Registre-se"
+              severity="secondary"
+              [outlined]="true"
+              (onClick)="goToRegister()"
+              class="w-full"
+            ></p-button>
+          </div>
+
+        </form>
+      </ng-template>
+    </p-card>
+  </div>
+</div>
